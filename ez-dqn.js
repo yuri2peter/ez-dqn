@@ -34,6 +34,9 @@ DQN示例 https://cs.stanford.edu/people/karpathy/reinforcejs/waterworld.html
 // 随时导入导出训练结果
     var j = agent.toJSON();
     agent.fromJSON(j);
+    
+// 重置agent，将会丢失已有的训练成果
+    agent.reset();
 ```
 
 opt参数详解：
