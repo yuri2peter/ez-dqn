@@ -64,13 +64,20 @@ box.append(goldBox);
 box.append(bombBox);
 box.append(textBox);
 
-export function paint({ state, goldNum, bombNum, reward, tderror }: Game) {
+export function paint({
+  state,
+  goldNum,
+  bombNum,
+  reward,
+  tderror,
+  tickIndex,
+}: Game) {
   agentBox.left = state.agentX * 100 - BOARD_WIDTH / 2 + "%";
   goldBox.left = state.goldX * 100 + "%";
   goldBox.top = state.goldY * 100 + "%";
   bombBox.left = state.bombX * 100 + "%";
   bombBox.top = state.bombY * 100 + "%";
-  textBox.content = `Gold: ${goldNum}, Bomb: ${bombNum}, Reward: ${reward.toFixed(
+  textBox.content = `Tick: ${tickIndex}, Gold: ${goldNum}, Bomb: ${bombNum}, Reward: ${reward.toFixed(
     5
   )}, TdError: ${tderror.toFixed(5)}`;
   screen.render();

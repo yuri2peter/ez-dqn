@@ -4,8 +4,8 @@ import { paint } from "./paint";
 import { save } from "./persist";
 
 const MOVE_SPPED = 0.02;
-// const TICK_MS = 0;
-const TICK_MS = 50;
+const TICK_MS = 0;
+// const TICK_MS = 50;
 
 export class Game {
   tickIndex = 0;
@@ -23,7 +23,13 @@ export class Game {
   agent = new DQNAgent({
     numStates: 5, // 自身位置, 金币位置，炸弹位置
     maxNumActions: 3, // 向左，保持，向右
-    num_hidden_units: 50,
+    num_hidden_units: 64,
+    opt: {
+      alpha: 0.02,
+      learning_steps_per_iteration: 20,
+      epsilon: 0.2,
+      gamma: 0.8,
+    },
   });
 
   run() {
@@ -34,7 +40,7 @@ export class Game {
 
   tick() {
     this.tickIndex++;
-    if (this.tickIndex % 500 === 0) {
+    if (this.tickIndex % 10000 === 0) {
       // save game
       save(this);
     }
@@ -70,7 +76,7 @@ export class Game {
     this.state.bombY += MOVE_SPPED;
     if (this.state.goldY >= 1) {
       if (Math.abs(this.state.agentX - this.state.goldX) <= BOARD_WIDTH / 200) {
-        reward = 0.5;
+        reward = 0.6;
         this.goldNum++;
       }
       this.state.goldX = Math.random();
