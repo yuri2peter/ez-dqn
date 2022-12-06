@@ -23,7 +23,7 @@ export class Game {
   agent = new DQNAgent({
     numStates: 5, // 自身位置, 金币位置，炸弹位置
     maxNumActions: 3, // 向左，保持，向右
-    num_hidden_units: 64,
+    num_hidden_units: 100,
     opt: {
       alpha: 0.02,
       learning_steps_per_iteration: 20,

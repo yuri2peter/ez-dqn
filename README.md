@@ -1,7 +1,9 @@
 # ez-dqn
 
-"ez-dqn" 是 DQN 强化学习的简单实现，提供了一个相对精简的 API，在小型游戏场景下有较好的表现。
+"ez-dqn" 是 DQN 强化学习的简单实现，提供了一个相对精简的 API。
 源码基于[karpathy/reinforcejs](https://github.com/karpathy/reinforcejs/blob/master/lib/rl.js)改编。
+
+> 实测在应对稀疏奖励的场景下，效果不好。
 
 ## 安装
 
@@ -12,15 +14,19 @@
 ### Quick Start
 
 ```ts
-import { srctest as sleep } from "../src/index";
+import { DQNAgent } from "src/index";
 
-async function main() {
-  console.log(1);
-  await sleep(1000);
-  console.log(2);
-}
-
-main();
+const agent = new DQNAgent({
+  numStates: 5,
+  maxNumActions: 3,
+  num_hidden_units: 100,
+  opt: {
+    alpha: 0.02,
+    learning_steps_per_iteration: 20,
+    epsilon: 0.2,
+    gamma: 0.8,
+  },
+});
 ```
 
 ### opt 参数详解
