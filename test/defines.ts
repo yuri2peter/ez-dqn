@@ -5,3 +5,5 @@ export interface State {
   bombY: number;
   agentX: number;
 }
+
+export const BOARD_WIDTH = 20;

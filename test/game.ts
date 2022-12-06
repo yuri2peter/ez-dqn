@@ -1,8 +1,8 @@
 import { DQNAgent } from "../src";
-import { State } from "./defines";
+import { BOARD_WIDTH, State } from "./defines";
 import { paint } from "./paint";
 
-const MOVE_SPPED = 0.01;
+const MOVE_SPPED = 0.02;
 
 export class Game {
   tickIndex = 0;
@@ -43,7 +43,7 @@ export class Game {
         break;
       // stay
       case 1:
-        reward = 0.1;
+        reward = 0;
         break;
       // right
       case 2:
@@ -54,6 +54,23 @@ export class Game {
           this.state.agentX += MOVE_SPPED;
         }
         break;
+    }
+    // drop
+    this.state.goldY += MOVE_SPPED;
+    this.state.bombY += MOVE_SPPED;
+    if (this.state.goldY >= 1) {
+      if (Math.abs(this.state.agentX - this.state.goldX) <= BOARD_WIDTH / 200) {
+        reward = 0.5;
+      }
+      this.state.goldX = Math.random();
+      this.state.goldY = Math.random() / 4;
+    }
+    if (this.state.bombY >= 1) {
+      if (Math.abs(this.state.agentX - this.state.bombX) <= BOARD_WIDTH / 200) {
+        reward = -1;
+      }
+      this.state.bombX = Math.random();
+      this.state.bombY = Math.random() / 4;
     }
     this.agent.learn(reward);
     paint(this.state);

@@ -1,65 +1,71 @@
-import { State } from "./defines";
-import readline from "readline";
-const outStream = process.stdout;
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: outStream,
+import { BOARD_WIDTH, State } from "./defines";
+import blessed from "blessed";
+
+const screen = blessed.screen({
+  smartCSR: true,
+});
+screen.title = "EZDQN Test";
+const box = blessed.box({
+  top: "center",
+  left: "center",
+  width: "50%",
+  height: "100%",
+  border: {
+    type: "line",
+  },
+  style: {
+    fg: "white",
+    border: {
+      fg: "#f0f0f0",
+    },
+  },
 });
 
-const isTTy = process.stdout.isTTY;
-if (!isTTy) {
-  console.log("当前控制台不支持TTY，无法显示");
-}
+const agentBox = blessed.line({
+  bottom: 0,
+  left: "center",
+  orientation: "horizontal",
+  width: BOARD_WIDTH + "%",
+  style: {
+    bg: "blue",
+  },
+});
+
+const goldBox = blessed.box({
+  top: "0%",
+  left: "0%",
+  width: 1,
+  height: 1,
+  style: {
+    bg: "yellow",
+  },
+});
+
+const bombBox = blessed.box({
+  top: "0%",
+  left: "0%",
+  width: 1,
+  height: 1,
+  style: {
+    bg: "grey",
+  },
+});
+
+screen.append(box);
+box.append(agentBox);
+box.append(goldBox);
+box.append(bombBox);
 
 export function paint(state: State) {
-  if (!isTTy) {
-    return;
-  }
-  readline.cursorTo(outStream, 0, 0);
-  readline.clearScreenDown(outStream);
-  paintBox();
-  paintObj(state);
-  writeAt(0, 10, " ");
+  agentBox.left = state.agentX * 100 - BOARD_WIDTH / 2 + "%";
+  goldBox.left = state.goldX * 100 + "%";
+  goldBox.top = state.goldY * 100 + "%";
+  bombBox.left = state.bombX * 100 + "%";
+  bombBox.top = state.bombY * 100 + "%";
+  screen.render();
 }
 
-function paintBox() {
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      if (i === 0 && j === 0) {
-        writeAt(i, j, "┌");
-        continue;
-      }
-      if (i === 0 && j === 9) {
-        writeAt(i, j, "└");
-        continue;
-      }
-      if (i === 9 && j === 0) {
-        writeAt(i, j, "┐");
-        continue;
-      }
-      if (i === 9 && j === 9) {
-        writeAt(i, j, "┘");
-        continue;
-      }
-    }
-  }
-}
-
-function paintObj(state: State) {
-  const agentX = floatToPx(state.agentX);
-  writeAt(agentX - 1, 9, "=");
-  writeAt(agentX, 9, "=");
-  writeAt(agentX + 1, 9, "=");
-
-  writeAt(floatToPx(state.goldX), floatToPx(state.goldY), "O");
-  writeAt(floatToPx(state.bombX), floatToPx(state.bombY), "X");
-}
-
-function writeAt(x: number, y: number, s: string) {
-  readline.cursorTo(outStream, x, y);
-  rl.write(s);
-}
-
-function floatToPx(f: number) {
-  return Math.round(f * 10);
-}
+screen.render();
+screen.key(["escape", "q", "C-c"], function (ch, key) {
+  return process.exit(0);
+});
