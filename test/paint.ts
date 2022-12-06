@@ -17,10 +17,9 @@ export function paint(state: State) {
   }
   readline.cursorTo(outStream, 0, 0);
   readline.clearScreenDown(outStream);
-
   paintBox();
   paintObj(state);
-  writeAt(0, 10, "");
+  writeAt(0, 10, " ");
 }
 
 function paintBox() {

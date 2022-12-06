@@ -40,7 +40,7 @@ export class DQNAgent {
   private exp!: [Mat, number, number, Mat, number][];
   private expi!: number;
   private t!: number;
-  private r0!: number;
+  private r0!: number | null;
   private s0!: Mat;
   private s1!: Mat;
   private a0!: number;
@@ -91,7 +91,7 @@ export class DQNAgent {
 
     this.t = 0;
 
-    this.r0 = 0;
+    this.r0 = null;
     this.s0 = new Mat(0, 0);
     this.s1 = new Mat(0, 0);
     this.a0 = 0;
@@ -120,6 +120,7 @@ export class DQNAgent {
     this.na = j.na;
     this.net = netFromJSON(j.net);
   }
+
   private forwardQ(net: Net, s: Mat, needs_backprop: boolean) {
     const g = new Graph(needs_backprop);
     const a1mat = g.add(g.mul(net.W1, s), net.b1);
@@ -164,24 +165,27 @@ export class DQNAgent {
    */
   learn(r1: number) {
     // perform an update on Q function
-    // learn from this tuple to get a sense of how "surprising" it is to the agent
-    const tderror = this.learnFromTuple(this.s0, this.a0, this.r0, this.s1);
+    let tderror = 0;
+    if (!(this.r0 == null) && this.alpha > 0) {
+      // learn from this tuple to get a sense of how "surprising" it is to the agent
+      tderror = this.learnFromTuple(this.s0, this.a0, this.r0, this.s1);
 
-    // decide if we should keep this experience in the replay
-    if (this.t % this.experience_add_every === 0) {
-      this.exp[this.expi] = [this.s0, this.a0, this.r0, this.s1, this.a1];
-      this.expi += 1;
-      if (this.expi > this.experience_size) {
-        this.expi = 0;
-      } // roll over when we run out
-    }
-    this.t += 1;
+      // decide if we should keep this experience in the replay
+      if (this.t % this.experience_add_every === 0) {
+        this.exp[this.expi] = [this.s0, this.a0, this.r0, this.s1, this.a1];
+        this.expi += 1;
+        if (this.expi > this.experience_size) {
+          this.expi = 0;
+        } // roll over when we run out
+      }
+      this.t += 1;
 
-    // sample some additional experience from replay memory and learn from it
-    for (let k = 0; k < this.learning_steps_per_iteration; k++) {
-      const ri = randi(0, this.exp.length); // todo: priority sweeps?
-      const e = this.exp[ri];
-      this.learnFromTuple(e[0], e[1], e[2], e[3]);
+      // sample some additional experience from replay memory and learn from it
+      for (let k = 0; k < this.learning_steps_per_iteration; k++) {
+        const ri = randi(0, this.exp.length); // todo: priority sweeps?
+        const e = this.exp[ri];
+        this.learnFromTuple(e[0], e[1], e[2], e[3]);
+      }
     }
     this.r0 = r1; // store for next update
     return tderror;
