@@ -1,5 +1,3 @@
-import { Mat, updateMat } from "./Mat";
-
 export function assert(
   condition: Boolean,
   message: string = "Assertion failed"
@@ -80,19 +78,5 @@ export function samplei(w: number[]) {
       return i;
     }
     i++;
-  }
-}
-
-interface Net {
-  W1: any;
-  b1: any;
-  W2: any;
-  b2: any;
-}
-function updateNet(net: Net, alpha: number) {
-  for (let p in net) {
-    if (net.hasOwnProperty(p)) {
-      updateMat(net[p], alpha);
-    }
   }
 }

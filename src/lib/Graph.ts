@@ -2,7 +2,7 @@ import { Mat } from "./Mat";
 import { assert, sig } from "./utils";
 
 // Transformer definitions
-class Graph {
+export class Graph {
   needs_backprop: boolean;
   backprop: (() => void)[] = [];
   constructor(needs_backprop?: boolean) {

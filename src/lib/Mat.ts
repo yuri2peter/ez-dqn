@@ -1,5 +1,6 @@
 import { zeros, assert, randn } from "./utils";
 
+export type MatJson = { n: number; d: number; w: number[] };
 export class Mat {
   n: number;
   d: number;
@@ -34,14 +35,11 @@ export class Mat {
       this.w[this.d * q + i] = m.w[q];
     }
   }
-  toJSON() {
-    const json = {};
-    json["n"] = this.n;
-    json["d"] = this.d;
-    json["w"] = this.w;
-    return json;
+  toJSON(): MatJson {
+    const { n, d, w } = this;
+    return { n, d, w };
   }
-  fromJSON(json: { n: number; d: number; w: number[] }) {
+  fromJSON(json: MatJson) {
     this.n = json.n;
     this.d = json.d;
     this.w = zeros(this.n * this.d);
