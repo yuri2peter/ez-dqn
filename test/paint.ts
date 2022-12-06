@@ -1,5 +1,6 @@
 import { BOARD_WIDTH, State } from "./defines";
 import blessed from "blessed";
+import { Game } from "./game";
 
 const screen = blessed.screen({
   smartCSR: true,
@@ -51,17 +52,27 @@ const bombBox = blessed.box({
   },
 });
 
+const textBox = blessed.text({
+  align: "center",
+  top: 1,
+  content: "",
+});
+
 screen.append(box);
 box.append(agentBox);
 box.append(goldBox);
 box.append(bombBox);
+box.append(textBox);
 
-export function paint(state: State) {
+export function paint({ state, goldNum, bombNum, reward, tderror }: Game) {
   agentBox.left = state.agentX * 100 - BOARD_WIDTH / 2 + "%";
   goldBox.left = state.goldX * 100 + "%";
   goldBox.top = state.goldY * 100 + "%";
   bombBox.left = state.bombX * 100 + "%";
   bombBox.top = state.bombY * 100 + "%";
+  textBox.content = `Gold: ${goldNum}, Bomb: ${bombNum}, Reward: ${reward.toFixed(
+    5
+  )}, TdError: ${tderror.toFixed(5)}`;
   screen.render();
 }
 
