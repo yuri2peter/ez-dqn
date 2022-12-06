@@ -1,3 +1,3 @@
-import srctest from "./srctest";
+import { DQNAgent } from "./lib/DQNAgent";
 
-export { srctest };
+export { DQNAgent };

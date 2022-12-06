@@ -35,7 +35,7 @@ const gaussRandom = ((): (() => number) => {
     return_v = true;
     return u * c;
   };
-  return a();
+  return a;
 })();
 export function randf(a: number, b: number) {
   return Math.random() * (b - a) + a;

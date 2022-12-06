@@ -1,9 +1,8 @@
-import { srctest as sleep } from "../src/index";
+import { Game } from "./game";
 
 async function main() {
-  console.log(1);
-  await sleep(1000);
-  console.log(2);
+  const game = new Game();
+  game.paintState();
 }
 
 main();
